@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from comun.clientes import ServicioNoDisponible, get_json
 from comun.eventos import publicar
 
+from .cotizador import PLANES, CotizacionInvalida, cotizar, todas
 from .models import Poliza
 from .serializers import PolizaSerializer, RenovarSerializer
 
@@ -68,6 +69,30 @@ def polizas(request):
     poliza = serializer.save()
     publicar("policy.issued", datos_evento(poliza))
     return Response(PolizaSerializer(poliza).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["POST"])
+def cotizar_poliza(request):
+    """Cotiza un producto: con `plan` devuelve ese plan; sin `plan`, los tres para comparar."""
+    datos = request.data
+    try:
+        if datos.get("plan"):
+            resultado = cotizar(datos.get("product_type"), datos.get("suma_asegurada", 0), datos["plan"], datos.get("edad"))
+        else:
+            if datos.get("product_type") not in PLANES:
+                raise CotizacionInvalida("Producto no disponible.")
+            resultado = todas(datos["product_type"], datos.get("suma_asegurada", 0), datos.get("edad"))
+    except (CotizacionInvalida, ArithmeticError, TypeError) as exc:
+        return error("VALIDATION_ERROR", str(exc) or "Datos de cotización inválidos.", status.HTTP_400_BAD_REQUEST)
+    return Response(resultado)
+
+
+@api_view(["GET"])
+def productos(request):
+    """Catálogo de productos y planes (sin precios)."""
+    return Response({k: {"nombre": v["nombre"], "valor": v["valor"],
+                         "planes": {p: {"nombre": i["nombre"], "coberturas": i["coberturas"]} for p, i in v["planes"].items()}}
+                     for k, v in PLANES.items()})
 
 
 @api_view(["GET"])

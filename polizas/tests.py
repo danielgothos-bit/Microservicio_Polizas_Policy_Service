@@ -61,6 +61,25 @@ class PolizasTests(APITestCase):
         self.assertTrue(dentro.data["vigente"])
         self.assertFalse(fuera.data["vigente"])
 
+    def test_cotizar_tres_planes(self, get_json, publicar):
+        resp = self.client.post("/api/v1/polizas/cotizar", {"product_type": "auto", "suma_asegurada": 60000000}, format="json")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual([c["plan"] for c in resp.data], ["basico", "estandar", "premium"])
+        self.assertLess(resp.data[0]["prima_anual"], resp.data[2]["prima_anual"])
+
+    def test_cotizar_invalido(self, get_json, publicar):
+        resp = self.client.post("/api/v1/polizas/cotizar", {"product_type": "vida", "suma_asegurada": 1000, "plan": "basico", "edad": 90}, format="json")
+        self.assertEqual(resp.status_code, 400)
+
+    def test_contratar_con_plan_calcula_la_prima(self, get_json, publicar):
+        cot = self.client.post("/api/v1/polizas/cotizar", {"product_type": "hogar", "suma_asegurada": 300000000, "plan": "estandar"}, format="json").data
+        datos = dict(DATOS, product_type="hogar", premium="1", coverage={"plan": "estandar", "suma_asegurada": 300000000})
+        datos.pop("premium")
+        resp = self.client.post("/api/v1/polizas", datos, format="json")
+        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(float(resp.data["premium"]), float(cot["prima_anual"]))
+        self.assertEqual(resp.data["coverage"]["plan_nombre"], "Estándar")
+
     def test_renovar_y_cancelar(self, get_json, publicar):
         id = self.emitir().data["id_poliza"]
         resp = self.client.put(f"/api/v1/polizas/{id}/renovar", {"meses": 12}, format="json")

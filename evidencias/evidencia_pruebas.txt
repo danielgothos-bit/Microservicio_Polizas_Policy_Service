@@ -1,0 +1,47 @@
+EVIDENCIA DE PRUEBAS · Microservicio_Polizas_Policy_Service
+Fecha: 2026-11-17 12:46
+Comando: USE_SQLITE=1 CELERY_EAGER=1 coverage run manage.py test -v 2
+
+Pruebas exigidas (Momento 3): tests/test_unitarias.py (2 unitarias con mocks) y tests/test_integracion.py (1 de integración).
+
+=== Resultado de cada prueba ===
+test_cobertura_en_fecha (polizas.tests.PolizasTests.test_cobertura_en_fecha) ... ok
+test_contratar_con_plan_calcula_la_prima (polizas.tests.PolizasTests.test_contratar_con_plan_calcula_la_prima) ... ok
+test_cotizar_invalido (polizas.tests.PolizasTests.test_cotizar_invalido) ... ok
+test_cotizar_tres_planes (polizas.tests.PolizasTests.test_cotizar_tres_planes) ... ok
+test_emitir_y_consultar (polizas.tests.PolizasTests.test_emitir_y_consultar) ... ok
+test_fechas_invalidas (polizas.tests.PolizasTests.test_fechas_invalidas) ... ok
+test_porcentajes_mayores_a_100 (polizas.tests.PolizasTests.test_porcentajes_mayores_a_100) ... ok
+test_renovar_y_cancelar (polizas.tests.PolizasTests.test_renovar_y_cancelar) ... ok
+test_servicio_asegurados_caido (polizas.tests.PolizasTests.test_servicio_asegurados_caido) ... ok
+test_emitir_consultar_renovar_y_cancelar_en_base_de_datos (tests.test_integracion.PolizaIntegracionTests.test_emitir_consultar_renovar_y_cancelar_en_base_de_datos) ... ok
+test_no_emite_si_asegurados_no_responde (tests.test_unitarias.EmisionUnitTests.test_no_emite_si_asegurados_no_responde) ... ok
+test_vida_aplica_recargo_por_edad_y_cuota_mensual (tests.test_unitarias.CotizadorUnitTests.test_vida_aplica_recargo_por_edad_y_cuota_mensual) ... ok
+
+Ran 13 tests in 0.091s
+OK
+
+=== Reporte de cobertura (coverage.py) ===
+Name                     Stmts   Miss  Cover   Missing
+------------------------------------------------------
+comun\celery_app.py          9      0   100%
+comun\clientes.py           66     47    29%   31-36, 39-42, 45-47, 50-54, 61, 70-101
+comun\errores.py            14      2    86%   20, 24
+comun\eventos.py            40     23    42%   51-69, 75-93
+comun\logs.py               14      1    93%   24
+comun\metricas.py           23      1    96%   44
+comun\models.py              8      0   100%
+comun\servicio.py            2      0   100%
+comun\views.py              42     26    38%   20-27, 33-59
+policy_service\urls.py       5      0   100%
+polizas\apps.py              4      0   100%
+polizas\cotizador.py        26      3    88%   70, 73, 77
+polizas\handlers.py          1      1     0%   2
+polizas\models.py           43      4    91%   41-42, 49, 70
+polizas\serializers.py      49      5    90%   15, 41, 51-52, 57
+polizas\urls.py              3      0   100%
+polizas\views.py           106     12    89%   45-48, 59-60, 67, 83, 93, 115-116, 144
+------------------------------------------------------
+TOTAL                      455    125    73%
+
+3 empty files skipped.

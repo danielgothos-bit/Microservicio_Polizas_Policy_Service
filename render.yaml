@@ -29,6 +29,12 @@ services:
       # URL pública del microservicio de Asegurados (ej: https://policyholder-service-xxxx.onrender.com)
       - key: POLICYHOLDER_SERVICE_URL
         sync: false
+      # URL pública del microservicio de Notificaciones (recibe policy.issued/renewed/cancelled)
+      - key: NOTIFICATION_SERVICE_URL
+        sync: false
+      # URL pública del microservicio de Analítica (recibe policy.issued/renewed/cancelled)
+      - key: ANALYTICS_SERVICE_URL
+        sync: false
 
   - type: keyvalue
     name: policy-redis

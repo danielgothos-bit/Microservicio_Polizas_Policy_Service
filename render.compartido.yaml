@@ -32,3 +32,9 @@ services:
       # URL pública del microservicio de Asegurados
       - key: POLICYHOLDER_SERVICE_URL
         sync: false
+      # URL pública del microservicio de Notificaciones (recibe policy.issued/renewed/cancelled)
+      - key: NOTIFICATION_SERVICE_URL
+        sync: false
+      # URL pública del microservicio de Analítica (recibe policy.issued/renewed/cancelled)
+      - key: ANALYTICS_SERVICE_URL
+        sync: false
